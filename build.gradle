@@ -16,7 +16,6 @@ buildscript {
 }
 
 apply plugin: 'idea'
-apply plugin: 'java'
 apply plugin: 'nebula.release'
 apply plugin: 'nebula.maven-publish'
 apply plugin: 'nebula.maven-manifest'
@@ -30,21 +29,30 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.25'
 
-    testCompile 'junit:junit:4.12'
-}
 
-publishing {
-    repositories {
-        maven {
-            credentials {
-                username "${nexusUser}"
-                password "${nexusPassword}"
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'nebula.release'
+    apply plugin: 'nebula.maven-publish'
+    apply plugin: 'nebula.maven-manifest'
+    apply plugin: 'nebula.info'
+    apply plugin: 'nebula.info-basic'
+    apply plugin: 'nebula.info-java'
+    apply plugin: 'nebula.info-ci'
+    apply plugin: 'nebula.info-scm'
+
+    publishing {
+        repositories {
+            maven {
+                credentials {
+                    username "${nexusUser}"
+                    password "${nexusPassword}"
+                }
+                url "http://${nexusHost}/repository/${nexusRepo}-${project.version.toString().endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
             }
-            url "http://${nexusHost}/repository/${nexusRepo}-${project.version.toString().endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
+            mavenLocal()
         }
-        mavenLocal()
     }
 }
